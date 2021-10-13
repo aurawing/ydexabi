@@ -11,7 +11,7 @@ import (
 var stub *Stub
 
 func TestMain(m *testing.M) {
-	stub = NewStub("https://data-seed-prebsc-1-s2.binance.org:8545", "0x5a20630dc55332ba80d947784032c44257c12474")
+	stub, _ = NewStub("https://data-seed-prebsc-1-s2.binance.org:8545", "0x5a20630dc55332ba80d947784032c44257c12474")
 	os.Exit(m.Run())
 }
 

@@ -19,16 +19,18 @@ type Stub struct {
 }
 
 //NewStub create a new stub of Exchange contract
-func NewStub(url, exchangeContractAddr string) *Stub {
+func NewStub(url, exchangeContractAddr string) (*Stub, error) {
 	client, err := ethclient.Dial(url)
 	if err != nil {
-		log.Fatalf("error when dial network %s: %s\n", url, err.Error())
+		log.Printf("error when dial network %s: %s\n", url, err.Error())
+		return nil, err
 	}
 	instance, err := NewYDexCli(common.HexToAddress(exchangeContractAddr), client)
 	if err != nil {
-		log.Fatalf("error when create instance of Exchange contract: %s\n", err.Error())
+		log.Printf("error when create instance of Exchange contract: %s\n", err.Error())
+		return nil, err
 	}
-	return &Stub{instance: instance}
+	return &Stub{instance: instance}, nil
 }
 
 //LoadAssetBySymbol find asset struct by token symbol
