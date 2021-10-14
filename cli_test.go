@@ -2,10 +2,14 @@ package ydexabi
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"log"
+	"math/big"
 	"os"
 	"testing"
+
+	"github.com/ethereum/go-ethereum/common"
 )
 
 var stub *Stub
@@ -69,4 +73,84 @@ func TestLoadPartiallyFilledOrderQuantityInPips(t *testing.T) {
 		log.Fatal(err)
 	}
 	fmt.Printf("%d\n", quantity)
+}
+
+func TestGenerateSigForWithdrawal(t *testing.T) {
+	sk := "a793a6351ee63c9cf6278784f7d3939084d81cd2ef7663ffe8c1931ad07a1f7f"
+	withdrawal := new(StructsWithdrawal)
+	withdrawal.WithdrawalType = 0
+	nonce := new(big.Int)
+	noncebytes, _ := hex.DecodeString("62e802dd2b3311eca9207085c2b700ea")
+	nonce.SetBytes(noncebytes)
+	withdrawal.Nonce = nonce
+	withdrawal.WalletAddress = common.HexToAddress("0xcCB98929A6D118d51224F6451F8CBE599E9343BE")
+	withdrawal.AssetSymbol = "TSC1"
+	withdrawal.QuantityInPips = 1000000000000
+	withdrawal.AutoDispatchEnabled = true
+	fmt.Println(GenerateSigForWithdrawal(withdrawal, sk))
+}
+
+func TestGenerateSigForOrder(t *testing.T) {
+	// sk := "a793a6351ee63c9cf6278784f7d3939084d81cd2ef7663ffe8c1931ad07a1f7f"
+	// order := new(StructsOrder)
+	// order.SignatureHashVersion = 1
+	// nonce := new(big.Int)
+	// noncebytes, _ := hex.DecodeString("b9327c022b3411eca24a7085c2b700ea")
+	// nonce.SetBytes(noncebytes)
+	// order.Nonce = nonce
+	// order.WalletAddress = common.HexToAddress("0xcCB98929A6D118d51224F6451F8CBE599E9343BE")
+	// marketSymbol := "TSC1-BNB"
+	// order.OrderType = 1
+	// order.Side = 0
+	// order.QuantityInPips = 10000000000
+	// order.IsQuantityInQuote = false
+	// order.LimitPriceInPips = 30000
+	// order.StopPriceInPips = 0
+	// order.ClientOrderId = ""
+	// order.TimeInForce = 0
+	// order.SelfTradePrevention = 3
+	// order.CancelAfter = 0
+	// fmt.Println(GenerateSigForOrder(order, marketSymbol, sk))
+
+	// sk := "e701b622b54dee377f974013f3b7e84cfc8cd89f9b62134128ef63eced67545e"
+	// order := new(StructsOrder)
+	// order.SignatureHashVersion = 1
+	// nonce := new(big.Int)
+	// noncebytes, _ := hex.DecodeString("1bf801532b3511ec86ef7085c2b700ea")
+	// nonce.SetBytes(noncebytes)
+	// order.Nonce = nonce
+	// order.WalletAddress = common.HexToAddress("0x11b5A8efFa4E05EF833C8b987bc0c3336eF81eEf")
+	// marketSymbol := "TSC1-BNB"
+	// order.OrderType = 1
+	// order.Side = 1
+	// order.QuantityInPips = 15000000000
+	// order.IsQuantityInQuote = false
+	// order.LimitPriceInPips = 30000
+	// order.StopPriceInPips = 0
+	// order.ClientOrderId = ""
+	// order.TimeInForce = 0
+	// order.SelfTradePrevention = 3
+	// order.CancelAfter = 0
+	// fmt.Println(GenerateSigForOrder(order, marketSymbol, sk))
+
+	sk := "a793a6351ee63c9cf6278784f7d3939084d81cd2ef7663ffe8c1931ad07a1f7f"
+	order := new(StructsOrder)
+	order.SignatureHashVersion = 1
+	nonce := new(big.Int)
+	noncebytes, _ := hex.DecodeString("c0de054a2b3811ec9c6d7085c2b700ea")
+	nonce.SetBytes(noncebytes)
+	order.Nonce = nonce
+	order.WalletAddress = common.HexToAddress("0xcCB98929A6D118d51224F6451F8CBE599E9343BE")
+	marketSymbol := "TSC1-BNB"
+	order.OrderType = 0
+	order.Side = 0
+	order.QuantityInPips = 15000000000
+	order.IsQuantityInQuote = true
+	order.LimitPriceInPips = 0
+	order.StopPriceInPips = 0
+	order.ClientOrderId = ""
+	order.TimeInForce = 0
+	order.SelfTradePrevention = 3
+	order.CancelAfter = 0
+	fmt.Println(GenerateSigForOrder(order, marketSymbol, sk))
 }
