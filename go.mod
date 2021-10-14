@@ -1,4 +1,4 @@
-module github.com/aurawing/ydexcli
+module github.com/aurawing/ydexabi
 
 go 1.13
 
