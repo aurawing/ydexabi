@@ -164,7 +164,7 @@ func TestFilterChainPropagationPeriodChanged(t *testing.T) {
 	end := uint64(13243195)
 	opts.End = &end
 	opts.Context = context.Background()
-	//FilterDeposited方法返回Deposited（入金）事件迭代器，除了第一个参数，后边三个均为事件属性过滤参数，对应事件中标记为indexed的结果属性，这里使用了assetSymbolIndex来过滤测试钱包1入金BNB的事件（遍历范围为块高度13154871到13243195）
+	//FilterDeposited方法返回Deposited（入金）事件迭代器，除了第一个参数，后边三个均为事件属性过滤参数，对应事件中标记为indexed的结果属性，这里使用了wallet和assetSymbolIndex两项来过滤测试钱包1入金BNB的事件（遍历范围为块高度13154871到13243195）
 	iter, err := stub.Instance.FilterDeposited(opts, []common.Address{common.HexToAddress("0xcCB98929A6D118d51224F6451F8CBE599E9343BE")}, nil, []string{"BNB"})
 	if err != nil {
 		panic(err)
