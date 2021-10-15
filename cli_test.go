@@ -9,6 +9,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -153,4 +154,34 @@ func TestGenerateSigForOrder(t *testing.T) {
 	order.SelfTradePrevention = 3
 	order.CancelAfter = 0
 	fmt.Println(GenerateSigForOrder(order, marketSymbol, sk))
+}
+
+func TestFilterChainPropagationPeriodChanged(t *testing.T) {
+	//过滤参数，用于确定过滤范围
+	opts := new(bind.FilterOpts)
+	//过滤范围从块高度13154871到13243195，End为nil则为遍历到最新高度
+	opts.Start = 13154871
+	end := uint64(13243195)
+	opts.End = &end
+	opts.Context = context.Background()
+	//FilterDeposited方法返回Deposited（入金）事件迭代器，除了第一个参数，后边三个均为事件属性过滤参数，对应事件中标记为indexed的结果属性，这里使用了assetSymbolIndex来过滤测试钱包1入金BNB的事件（遍历范围为块高度13154871到13243195）
+	iter, err := stub.Instance.FilterDeposited(opts, []common.Address{common.HexToAddress("0xcCB98929A6D118d51224F6451F8CBE599E9343BE")}, nil, []string{"BNB"})
+	if err != nil {
+		panic(err)
+	}
+	//循环遍历迭代器
+	for {
+		//Next方法返回true表示解析到事件，后续可以直接通过Event属性取出事件
+		if iter.Next() {
+			fmt.Printf("Event: %+v\n", iter.Event)
+		} else {
+			if iter.Error() != nil {
+				//Next方法返回false且Error()方法返回不为nil表示可能遇到解析错误，此时应处理错误后继续读取
+				fmt.Printf("error: %s\n", iter.Error())
+			} else {
+				//Next方法返回false且Error()方法返回nil表示后续没有事件可读，应中止循环
+				return
+			}
+		}
+	}
 }
