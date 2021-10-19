@@ -16,7 +16,7 @@ import (
 var stub *Stub
 
 func TestMain(m *testing.M) {
-	stub, _ = NewStub("https://data-seed-prebsc-1-s2.binance.org:8545", "0x5a20630dc55332ba80d947784032c44257c12474")
+	stub, _ = NewStubByURL("https://data-seed-prebsc-1-s2.binance.org:8545", "0x5a20630dc55332ba80d947784032c44257c12474")
 	os.Exit(m.Run())
 }
 
@@ -156,7 +156,7 @@ func TestGenerateSigForOrder(t *testing.T) {
 	fmt.Println(GenerateSigForOrder(order, marketSymbol, sk))
 }
 
-func TestFilterChainPropagationPeriodChanged(t *testing.T) {
+func TestFilterDeposited(t *testing.T) {
 	//过滤参数，用于确定过滤范围
 	opts := new(bind.FilterOpts)
 	//过滤范围从块高度13154871到13243195，End为nil则为遍历到最新高度

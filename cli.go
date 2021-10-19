@@ -18,14 +18,19 @@ type Stub struct {
 	Instance *Ydexabi
 }
 
-//NewStub create a new stub of Exchange contract
-func NewStub(url, exchangeContractAddr string) (*Stub, error) {
+//NewStubByURL create a new stub of Exchange contract
+func NewStubByURL(url, exchangeContractAddr string) (*Stub, error) {
 	client, err := ethclient.Dial(url)
 	if err != nil {
 		log.Printf("error when dial network %s: %s\n", url, err.Error())
 		return nil, err
 	}
-	instance, err := NewYdexabi(common.HexToAddress(exchangeContractAddr), client)
+	return NewStub(client, exchangeContractAddr)
+}
+
+//NewStub create a new stub of Exchange contract by ethclient and contract address
+func NewStub(cli *ethclient.Client, exchangeContractAddr string) (*Stub, error) {
+	instance, err := NewYdexabi(common.HexToAddress(exchangeContractAddr), cli)
 	if err != nil {
 		log.Printf("error when create instance of Exchange contract: %s\n", err.Error())
 		return nil, err
