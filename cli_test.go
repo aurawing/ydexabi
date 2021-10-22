@@ -16,7 +16,7 @@ import (
 var stub *Stub
 
 func TestMain(m *testing.M) {
-	stub, _ = NewStubByURL("https://data-seed-prebsc-1-s2.binance.org:8545", "0x5a20630dc55332ba80d947784032c44257c12474")
+	stub, _ = NewStubByURL("https://data-seed-prebsc-1-s2.binance.org:8545", "0x1c74ba5d6a25e26a84f6a3c5279fea3b71bf461e")
 	os.Exit(m.Run())
 }
 
@@ -74,6 +74,32 @@ func TestLoadPartiallyFilledOrderQuantityInPips(t *testing.T) {
 		log.Fatal(err)
 	}
 	fmt.Printf("%d\n", quantity)
+}
+
+func TestIsWalletExit(t *testing.T) {
+	b, err := stub.IsWalletExit(context.Background(), "0xcCB98929A6D118d51224F6451F8CBE599E9343BE")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%v\n", b)
+}
+
+func TestIsWalletAllExit(t *testing.T) {
+	b, err := stub.IsWalletExitFinalized(context.Background(), "0xcCB98929A6D118d51224F6451F8CBE599E9343BE")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%v\n", b)
+}
+
+func TestLoadBalanceAssetAddress(t *testing.T) {
+	addrs, err := stub.LoadBalanceAssetAddress(context.Background(), "0xcCB98929A6D118d51224F6451F8CBE599E9343BE")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, addr := range addrs {
+		fmt.Printf("%s\n", addr)
+	}
 }
 
 func TestGenerateSigForWithdrawal(t *testing.T) {

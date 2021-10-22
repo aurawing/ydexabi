@@ -94,6 +94,29 @@ func (stub *Stub) LoadPartiallyFilledOrderQuantityInPips(ctx context.Context, or
 	return stub.Instance.LoadPartiallyFilledOrderQuantityInPips(&bind.CallOpts{Context: ctx}, arr)
 }
 
+//IsWalletExit check if wallet is exited
+func (stub *Stub) IsWalletExit(ctx context.Context, wallet string) (bool, error) {
+	return stub.Instance.IsWalletExit(&bind.CallOpts{Context: ctx}, common.HexToAddress(wallet))
+}
+
+//IsWalletExitFinalized check if wallet is finalized
+func (stub *Stub) IsWalletExitFinalized(ctx context.Context, wallet string) (bool, error) {
+	return stub.Instance.IsWalletExitFinalized(&bind.CallOpts{Context: ctx}, common.HexToAddress(wallet))
+}
+
+//LoadBalanceAssetAddress get all asset address that balance is not zero within wallet
+func (stub *Stub) LoadBalanceAssetAddress(ctx context.Context, wallet string) ([]string, error) {
+	addrs, err := stub.Instance.LoadBalanceAssetAddress(&bind.CallOpts{Context: ctx}, common.HexToAddress(wallet))
+	if err != nil {
+		return nil, err
+	}
+	results := make([]string, 0)
+	for _, addr := range addrs {
+		results = append(results, addr.String())
+	}
+	return results, nil
+}
+
 //write operation
 
 //SetAdmin set admin account for Exchange contract
@@ -180,9 +203,14 @@ func (stub *Stub) Withdraw(opts *bind.TransactOpts, withdrawal *StructsWithdrawa
 	return stub.Instance.Withdraw(opts, *withdrawal)
 }
 
-//WithdrawExit withdraw and exit
+//WithdrawExit withdraw one asset after exited
 func (stub *Stub) WithdrawExit(opts *bind.TransactOpts, assetAddr string) (*types.Transaction, error) {
 	return stub.Instance.WithdrawExit(opts, common.HexToAddress(assetAddr))
+}
+
+//WithdrawAllExit withdraw all assets after exited
+func (stub *Stub) WithdraAllExit(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return stub.Instance.WithdrawAllExit(opts)
 }
 
 //ExitWallet wallet exit
