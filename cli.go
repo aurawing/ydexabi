@@ -189,6 +189,17 @@ func (stub *Stub) ExecuteTrade(opts *bind.TransactOpts, buy *StructsOrder, sell 
 	return stub.Instance.ExecuteTrade(opts, *buy, *sell, *trade)
 }
 
+//ExecuteTrade execute trade
+func (stub *Stub) ExecuteTrades(opts *bind.TransactOpts, buys []StructsOrder, sells []StructsOrder, trades []StructsTrade) (*types.Transaction, error) {
+	if len(buys) != len(sells) && len(sells) != len(trades) {
+		return nil, errors.New("length do not match")
+	}
+	if len(buys) == 0 {
+		return nil, errors.New("length must be great than zero")
+	}
+	return stub.Instance.ExecuteTrades(opts, buys, sells, trades)
+}
+
 //InvalidateOrderNonce invalidate order by nonce
 func (stub *Stub) InvalidateOrderNonce(opts *bind.TransactOpts, nonce string) (*types.Transaction, error) {
 	b, err := hex.DecodeString(nonce)

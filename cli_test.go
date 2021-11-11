@@ -11,6 +11,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 var stub *Stub
@@ -20,6 +21,18 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+func TestRecipent(t *testing.T) {
+	ethclient, err := ethclient.Dial("https://data-seed-prebsc-1-s2.binance.org:8545")
+	if err != nil {
+		panic(err)
+	}
+	ret, err := ethclient.TransactionReceipt(context.Background(), common.HexToHash("0x3a2205fed612a25a6be94f912b3c2670a92ef5e8c2f1071ebdc70b5b160e04f3"))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%+v\n", ret)
+
+}
 func TestLoadAssetBySymbol(t *testing.T) {
 	asset, err := stub.LoadAssetBySymbol(context.Background(), "BNB", 1634046847000)
 	if err != nil {
